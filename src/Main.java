@@ -1,41 +1,87 @@
-import java.util.Locale;
 import java.util.Scanner;
-
 public class Main {
+    public static String[] names = {"Almost Famous", "Soho", "Милениум", "No Mercy", "Enjoy", "Бялата къща", "Хаджи Николов Хан",
+            "Ресторант Капитан Блъд", "Бар Занзибар", "Винарна Абритус"};
+    public static double[] barLatitude = {43.52755023562406, 43.5258028565389, 43.51910958149257, 43.52173293102872, 43.52552829519936,
+            43.524879563629675, 43.527419311882305, 43.52687371512204, 43.52554377894517, 43.52658131141369};
+    public static double[] barLongitude = {26.518606935419914, 26.522469757107643, 26.52075541216495, 26.52226412377693, 26.528079654992204,
+            26.522540368484, 26.529784811793945, 26.531229493375804, 26.525185704164105, 26.531128698176378};
+    public static String[] whenOpens = {"08.00", "09.00", "09.00", "21.00", "08.00", "07.00", "10.00", "07.00", "08.00", "19.00"};
+    public static String[] whenCloses = {"23.30", "24.00", "23.30", "04.00", "24.00", "21.00", "23.00", "01.00", "23.00", "24.00"};
+    public static double[] distances = new double[barLatitude.length];
+
+    private static Double toRad(Double value) {
+        return value * Math.PI / 180;
+    }
+    public static double calculateDistance(double yourLatitude, double yourLongitude, int i){
+        final int earthRadiusMetres = 6371000;
+
+        double latDistance = toRad(barLatitude[i] - yourLatitude);
+        double lonDistance = toRad(barLongitude[i] - yourLongitude);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) + Math.cos(toRad(yourLatitude)) * Math.cos(toRad(barLatitude[i])) *
+                   Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        return earthRadiusMetres * c;
+    }
+    public static void putTheDistancesIntoArray(double yourLatitude, double yourLongitude){
+        for (int i = 0; i < barLatitude.length; i++) {
+            distances[i] = calculateDistance(yourLatitude, yourLongitude, i);
+        }
+    }
+    public static void swapStrings(String[] array, int j){
+        String temp = "";
+
+        temp = array[j - 1];
+        array[j - 1] = array[j];
+        array[j] = temp;
+    }
+    public static void swapDoubles(double[] array, int j){
+        double temp = 0;
+
+        temp = array[j - 1];
+        array[j - 1] = array[j];
+        array[j] = temp;
+    }
+    public static void sortTheElementsByDistance(){
+        for (int i = 0; i < distances.length; i++) {
+            for (int j = 1; j < (distances.length - i); j++) {
+                if (distances[j - 1] > distances[j]) {
+                    swapDoubles(distances, j);
+                    swapStrings(names, j);
+                    swapStrings(whenOpens, j);
+                    swapStrings(whenCloses, j);
+                }
+            }
+        }
+    }
+    public static void printResult(){
+        for (int i = 0; i < names.length; i++) {
+            System.out.println(i + 1 + ". " + names[i] + "(" + whenOpens[i] + " - " + whenCloses[i] + ") - " + distances[i] + "m");
+        }
+    }
     public static void main(String[] args) {
-        String[][] nameLatitudeLongitudeOpensCloses =  {
-                {"Almost Famous", "43.52755023562406", "26.518606935419914", "08:00", "23:30"},
-                {"Soho", "43.5258028565389", "26.522469757107643", "09:00", "00:00"},
-                {"Милениум", "43.51910958149257", "26.52075541216495", "09:00", "23:30"},
-                {"No Mercy", "43.52173293102872", "26.52226412377693", "21:00", "04:00"},
-                {"Enjoy", "43.52552829519936", "26.528079654992204", "08:00", "00:00"},
-                {"Бялата къща", "43.524879563629675", "26.522540368484", "07:00", "21:00"},
-                {"Хаджи Николов Хан", "43.527419311882305", "26.529784811793945", "10:00", "23:00"},
-                {"Ресторант Капитан Блъд", "43.52687371512204", "26.531229493375804", "07:00", "01:00"},
-                {"Бар Занзибар", "43.52554377894517", "26.525185704164105", "08:00", "23:00"},
-                {"Винарна Абритус", "43.52658131141369", "26.531128698176378", "19:00", "00:00"}
-        };
-
-
         Scanner scan = new Scanner(System.in);
         System.out.println("Въведете локацията си. ");
         System.out.println("Ширина (в градуси): ");
         double latitude = scan.nextDouble();
         System.out.println("Дължина (в градуси): ");
         double longitude = scan.nextDouble();
+
+        putTheDistancesIntoArray(latitude, longitude);
+
+
         byte option;
         do {
             System.out.println("Изберете опция: СПИСЪК ВСИЧКИ (1), СПИСЪК ОТВОРЕНИ (2), КАРТА (3), ИЗХОД (4)");
              option = scan.nextByte();
              switch (option){
-                 case 1:
+                 case 1: sortTheElementsByDistance();printResult();break;
                  case 2:
                  case 3:
                  case 4:
              }
         }while (option != 4);
-
-
 
 
 
