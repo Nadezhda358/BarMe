@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 public class Main {
     public static String[] names = {"Almost Famous", "Soho", "Милениум", "No Mercy", "Enjoy", "Бялата къща", "Хаджи Николов Хан",
@@ -6,9 +8,10 @@ public class Main {
             43.524879563629675, 43.527419311882305, 43.52687371512204, 43.52554377894517, 43.52658131141369};
     public static double[] barLongitude = {26.518606935419914, 26.522469757107643, 26.52075541216495, 26.52226412377693, 26.528079654992204,
             26.522540368484, 26.529784811793945, 26.531229493375804, 26.525185704164105, 26.531128698176378};
-    public static String[] whenOpens = {"08.00", "09.00", "09.00", "21.00", "08.00", "07.00", "10.00", "07.00", "08.00", "19.00"};
-    public static String[] whenCloses = {"23.30", "24.00", "23.30", "04.00", "24.00", "21.00", "23.00", "01.00", "23.00", "24.00"};
+    public static double[] whenOpens = {08.00, 09.00, 09.00, 21.00, 08.00, 07.00, 10.00, 07.00, 08.00, 19.00};
+    public static double[] whenCloses = {23.30, 24.00, 23.30, 04.00, 24.00, 21.00, 23.00, 01.00, 23.00, 24.00};
     public static double[] distances = new double[barLatitude.length];
+    public static double[] timeUntilCloses = new double[whenOpens.length];
 
     private static Double toRad(Double value) {
         return value * Math.PI / 180;
@@ -30,16 +33,12 @@ public class Main {
         }
     }
     public static void swapStrings(String[] array, int j){
-        String temp = "";
-
-        temp = array[j - 1];
+        String temp = array[j - 1];
         array[j - 1] = array[j];
         array[j] = temp;
     }
     public static void swapDoubles(double[] array, int j){
-        double temp = 0;
-
-        temp = array[j - 1];
+        double temp = array[j - 1];
         array[j - 1] = array[j];
         array[j] = temp;
     }
@@ -49,41 +48,51 @@ public class Main {
                 if (distances[j - 1] > distances[j]) {
                     swapDoubles(distances, j);
                     swapStrings(names, j);
-                    swapStrings(whenOpens, j);
-                    swapStrings(whenCloses, j);
+                    swapDoubles(whenOpens, j);
+                    swapDoubles(whenCloses, j);
                 }
+            }
+        }
+    }
+    public static void findWhichBarsWorks(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH.mm");
+        LocalDateTime now = LocalDateTime.now();
+        double timeNow = Double.parseDouble(dtf.format(now));
+
+        for (int i = 0; i < timeUntilCloses.length; i++) {
+            if (whenCloses[i] < whenOpens[i] && (timeNow >= whenOpens[i] || timeNow <= whenCloses[i])){
+            }
+            if (whenCloses[i] > whenOpens[i] && (timeNow >= whenOpens[i] && timeNow <= whenCloses[i])){
             }
         }
     }
     public static void printResult(){
         for (int i = 0; i < names.length; i++) {
-            System.out.println(i + 1 + ". " + names[i] + "(" + whenOpens[i] + " - " + whenCloses[i] + ") - " + distances[i] + "m");
+            System.out.println(i + 1 + ". " + names[i] + "(" + whenOpens[i] + " - " + whenCloses[i] + ") - " + Math.round(distances[i]) + "m");
         }
     }
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Въведете локацията си. ");
-        System.out.println("Ширина (в градуси): ");
+        System.out.print("Ширина (в градуси): ");
         double latitude = scan.nextDouble();
-        System.out.println("Дължина (в градуси): ");
+        System.out.print("Дължина (в градуси): ");
         double longitude = scan.nextDouble();
 
         putTheDistancesIntoArray(latitude, longitude);
-
 
         byte option;
         do {
             System.out.println("Изберете опция: СПИСЪК ВСИЧКИ (1), СПИСЪК ОТВОРЕНИ (2), КАРТА (3), ИЗХОД (4)");
              option = scan.nextByte();
              switch (option){
-                 case 1: sortTheElementsByDistance();printResult();break;
+                 case 1: sortTheElementsByDistance(); printResult();break;
                  case 2:
                  case 3:
-                 case 4:
+                 case 4:break;
+                 default:
+                     System.out.println("Invalid input");
              }
         }while (option != 4);
-
-
-
     }
 }
