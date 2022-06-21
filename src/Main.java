@@ -42,14 +42,17 @@ public class Main {
         array[j - 1] = array[j];
         array[j] = temp;
     }
-    public static void sortTheElementsByDistance(){
-        for (int i = 0; i < distances.length; i++) {
-            for (int j = 1; j < (distances.length - i); j++) {
-                if (distances[j - 1] > distances[j]) {
+    public static void sortTheElements(double[] array){
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 1; j < (array.length - i); j++) {
+                if (array[j - 1] > array[j]) {
                     swapDoubles(distances, j);
+                    swapDoubles(timeUntilCloses, j);
                     swapStrings(names, j);
                     swapDoubles(whenOpens, j);
                     swapDoubles(whenCloses, j);
+                    swapDoubles(barLatitude, j);
+                    swapDoubles(barLongitude, j);
                 }
             }
         }
@@ -61,14 +64,38 @@ public class Main {
 
         for (int i = 0; i < timeUntilCloses.length; i++) {
             if (whenCloses[i] < whenOpens[i] && (timeNow >= whenOpens[i] || timeNow <= whenCloses[i])){
-            }
-            if (whenCloses[i] > whenOpens[i] && (timeNow >= whenOpens[i] && timeNow <= whenCloses[i])){
+                calculateRemainingTime1(i, timeNow);
+            }else if (whenCloses[i] > whenOpens[i] && (timeNow >= whenOpens[i] && timeNow <= whenCloses[i])){
+                calculateRemainingTime2(i, timeNow);
             }
         }
     }
-    public static void printResult(){
+    public static void calculateRemainingTime1(int i, double now){
+        double timeLeft = whenCloses[i] - now + 24 -0.40;
+        if (timeLeft % 1 >= 0.6){
+            timeLeft += 0.40;
+        }
+        timeUntilCloses[i] = timeLeft;
+    }
+    public static void calculateRemainingTime2(int i, double now){
+        double timeLeft = whenCloses[i] - now - 0.40;
+        if (timeLeft % 1 >= 0.6){
+            timeLeft += 0.40;
+        }
+        timeUntilCloses[i] = timeLeft;
+    }
+    public static void printResultOption1(){
         for (int i = 0; i < names.length; i++) {
-            System.out.println(i + 1 + ". " + names[i] + "(" + whenOpens[i] + " - " + whenCloses[i] + ") - " + Math.round(distances[i]) + "m");
+            System.out.println(i + 1 + ". " + names[i] + "(" + whenOpens[i] + "0 - " + whenCloses[i] + "0) - " + Math.round(distances[i]) + "m");
+        }
+    }
+    public static void printResultOption2(){
+        byte count = 1;
+        for (int i = 0; i < names.length; i++) {
+            if (timeUntilCloses[i] != 0){
+                System.out.println(count + ". " + names[i] + "(" + whenOpens[i] + "0 - " + whenCloses[i] + "0)");
+                count++;
+            }
         }
     }
     public static void main(String[] args) {
@@ -86,8 +113,8 @@ public class Main {
             System.out.println("Èçáåðåòå îïöèÿ: ÑÏÈÑÚÊ ÂÑÈ×ÊÈ (1), ÑÏÈÑÚÊ ÎÒÂÎÐÅÍÈ (2), ÊÀÐÒÀ (3), ÈÇÕÎÄ (4)");
              option = scan.nextByte();
              switch (option){
-                 case 1: sortTheElementsByDistance(); printResult();break;
-                 case 2:
+                 case 1: sortTheElements(distances); printResultOption1();break;
+                 case 2:findWhichBarsWorks();sortTheElements(timeUntilCloses);printResultOption2();break;
                  case 3:
                  case 4:break;
                  default:
