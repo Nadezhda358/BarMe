@@ -98,6 +98,67 @@ public class Main {
             }
         }
     }
+    //1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+    //*броим колко елемента трябва да има във свеки масив
+    //*създаваме масивите със толкова елемента - 1, като объщаме левия
+    //печатаме ляво, х, дясно с различни методи
+    public static void createArrays(double yourLatitude){
+        int countLeft = 0;
+        int countRight = 0;
+        for (int i = 0; i < barLatitude.length; i++) {
+            if (barLatitude[i] <= yourLatitude){
+                countLeft++;
+            }else{
+                countRight++;
+            }
+        }
+
+        int[] leftSide = new int[countLeft];
+        int[] nameIndexLeft = new int[countLeft];
+        int[] rightSide = new int[countRight];
+        int[] nameIndexRight = new int[countRight];
+
+        byte index1 = 0;
+        byte index2 = 0;
+        for (int i = 0; i < barLatitude.length; i++) {
+            if (barLatitude[i] <= yourLatitude){
+                leftSide[index1] = (int) distances[i] / 50;
+                nameIndexLeft[index1] = i;
+                index1++;
+            }else{
+                rightSide[index2] = (int) distances[i] / 50;
+                nameIndexRight[index2] = i;
+                index2++;
+            }
+        }
+        printMapOption3(leftSide, rightSide, nameIndexLeft, nameIndexRight);
+    }
+    public static void printMapOption3(int[] left, int[] right, int[] indexLeft, int[] indexRight){
+        int countUnderscore = 0;
+        String underscore = "_";
+        for (int i = left.length - 1; i >= 0; i--) {
+            if (i == 0){
+                countUnderscore = left[i];
+            }else{
+                countUnderscore = left[i] - left[i - 1];
+            }
+
+            System.out.print(indexLeft[i] + 1);
+            System.out.print(underscore.repeat(countUnderscore));
+        }
+        System.out.print("X");
+        for (int i = 0; i < right.length; i++) {
+            if (i == 0){
+                countUnderscore = right[i];
+            }else{
+                countUnderscore = right[i] - right[i-1];
+            }
+
+            System.out.print(underscore.repeat(countUnderscore));
+            System.out.print(indexRight[i] + 1);
+        }
+    }
+    //2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Въведете локацията си. ");
@@ -110,12 +171,14 @@ public class Main {
 
         byte option;
         do {
+            System.out.println();
             System.out.println("Изберете опция: СПИСЪК ВСИЧКИ (1), СПИСЪК ОТВОРЕНИ (2), КАРТА (3), ИЗХОД (4)");
              option = scan.nextByte();
              switch (option){
                  case 1: sortTheElements(distances); printResultOption1();break;
                  case 2:findWhichBarsWorks();sortTheElements(timeUntilCloses);printResultOption2();break;
-                 case 3:
+                 case 3: sortTheElements(distances);
+                 createArrays(latitude);
                  case 4:break;
                  default:
                      System.out.println("Invalid input");
