@@ -157,6 +157,14 @@ public class Main {
             System.out.print(underscore.repeat(countUnderscore));
             System.out.print(indexRight[i] + 1);
         }
+
+        System.out.println();
+        for (int i = 0; i < indexLeft.length; i++) {
+            System.out.println(indexLeft[i] + 1 + ". " + names[indexLeft[i]]);
+        }
+        for (int i = 0; i < indexRight.length; i++) {
+            System.out.println(indexRight[i] + 1 + ". " + names[indexRight[i]]);
+        }
     }
     //2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
     public static void main(String[] args) {
