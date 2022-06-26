@@ -98,10 +98,6 @@ public class Main {
             }
         }
     }
-    //1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
-    //*броим колко елемента трябва да има във свеки масив
-    //*създаваме масивите със толкова елемента - 1, като объщаме левия
-    //печатаме ляво, х, дясно с различни методи
     public static void createArrays(double yourLatitude){
         int countLeft = 0;
         int countRight = 0;
@@ -133,8 +129,8 @@ public class Main {
         }
         printMapOption3(leftSide, rightSide, nameIndexLeft, nameIndexRight);
     }
-    public static void printMapOption3(int[] left, int[] right, int[] indexLeft, int[] indexRight){
-        int countUnderscore = 0;
+    public static void printLeftSide(int[] left, int[] indexLeft){
+        int countUnderscore;
         String underscore = "_";
         for (int i = left.length - 1; i >= 0; i--) {
             if (i == 0){
@@ -146,7 +142,10 @@ public class Main {
             System.out.print(indexLeft[i] + 1);
             System.out.print(underscore.repeat(countUnderscore));
         }
-        System.out.print("X");
+    }
+    public static void printRightSide(int[] right, int[] indexRight){
+        int countUnderscore;
+        String underscore = "_";
         for (int i = 0; i < right.length; i++) {
             if (i == 0){
                 countUnderscore = right[i];
@@ -157,6 +156,11 @@ public class Main {
             System.out.print(underscore.repeat(countUnderscore));
             System.out.print(indexRight[i] + 1);
         }
+    }
+    public static void printMapOption3(int[] left, int[] right, int[] indexLeft, int[] indexRight){
+        printLeftSide(left, indexLeft);
+        System.out.print("X");
+        printRightSide(right, indexRight);
 
         System.out.println();
         for (int i = 0; i < indexLeft.length; i++) {
@@ -166,7 +170,23 @@ public class Main {
             System.out.println(indexRight[i] + 1 + ". " + names[indexRight[i]]);
         }
     }
-    //2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+    public static void chooseOption(double yourLatitude){
+        Scanner scan = new Scanner(System.in);
+        byte option;
+        do {
+            System.out.println();
+            System.out.println("Изберете опция: СПИСЪК ВСИЧКИ (1), СПИСЪК ОТВОРЕНИ (2), КАРТА (3), ИЗХОД (4)");
+            option = scan.nextByte();
+            switch (option){
+                case 1: sortTheElements(distances); printResultOption1();break;
+                case 2:findWhichBarsWorks();sortTheElements(timeUntilCloses);printResultOption2();break;
+                case 3: sortTheElements(distances); createArrays(yourLatitude);
+                case 4:break;
+                default:
+                    System.out.println("Invalid input");
+            }
+        }while (option != 4);
+    }
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Въведете локацията си. ");
@@ -176,21 +196,6 @@ public class Main {
         double longitude = scan.nextDouble();
 
         putTheDistancesIntoArray(latitude, longitude);
-
-        byte option;
-        do {
-            System.out.println();
-            System.out.println("Изберете опция: СПИСЪК ВСИЧКИ (1), СПИСЪК ОТВОРЕНИ (2), КАРТА (3), ИЗХОД (4)");
-             option = scan.nextByte();
-             switch (option){
-                 case 1: sortTheElements(distances); printResultOption1();break;
-                 case 2:findWhichBarsWorks();sortTheElements(timeUntilCloses);printResultOption2();break;
-                 case 3: sortTheElements(distances);
-                 createArrays(latitude);
-                 case 4:break;
-                 default:
-                     System.out.println("Invalid input");
-             }
-        }while (option != 4);
+        chooseOption(latitude);
     }
 }
